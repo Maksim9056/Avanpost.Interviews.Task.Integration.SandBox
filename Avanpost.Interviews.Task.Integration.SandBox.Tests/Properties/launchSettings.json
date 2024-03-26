@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Avanpost.Interviews.Task.Integration.SandBox.Tests": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
