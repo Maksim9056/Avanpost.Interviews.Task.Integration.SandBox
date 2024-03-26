@@ -28,7 +28,6 @@ namespace Avanpost.Interviews.Task.Integration.SandBox.Connector
                  var d =        output1.ToUpper();
                 sql = d;
                 Dbcs dbcs = new Dbcs(d);
-              
             }
             else
             {

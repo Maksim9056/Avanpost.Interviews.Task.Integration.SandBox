@@ -1,3 +1,4 @@
+
 namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
 {
     public class UnitTest1
@@ -20,6 +21,7 @@ namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
 
         public DataManager Init(string providerName)
         {
+   
             var factory = new DbContextFactory(dataBasesCS[providerName]);
             var dataSetter = new DataManager(factory, providerName);
 
