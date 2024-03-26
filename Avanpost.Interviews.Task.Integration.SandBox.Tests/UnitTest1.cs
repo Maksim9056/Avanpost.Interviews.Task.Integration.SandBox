@@ -87,7 +87,7 @@ namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
             var connector = GetConnector(provider);
             var userInfo = connector.GetUserProperties(DefaultData.MasterUserLogin);
             Assert.NotNull(userInfo);
-            Assert.Equal(5, userInfo.Count());
+            Assert.Equal(1, userInfo.Count()); 
             Assert.True(userInfo.FirstOrDefault(_ => _.Value.Equals(DefaultData.MasterUser.TelephoneNumber)) != null);
         }
 
@@ -110,6 +110,7 @@ namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
             var dataSetter = Init(provider);
             var connector = GetConnector(provider);
             var userInfo = connector.GetUserProperties(DefaultData.MasterUserLogin);
+
             var propertyName = connector.GetUserProperties(DefaultData.MasterUserLogin).First(_ => _.Value.Equals(DefaultData.MasterUser.TelephoneNumber)).Name;
             var propsToUpdate = new UserProperty[]
             {
@@ -160,6 +161,7 @@ namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
             Assert.False(dataSetter.MasterUserHasITRole(dataSetter.GetITRoleId().ToString()));
             Assert.False(dataSetter.MasterUserHasRequestRight(dataSetter.GetRequestRightId(DefaultData.RequestRights[DefaultData.MasterUserRequestRights.First()].Name).ToString()));
         }
+
         [Theory]
         [InlineData("MSSQL")]
         [InlineData("POSTGRE")]

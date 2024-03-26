@@ -3,6 +3,9 @@ global using Avanpost.Interviews.Task.Integration.Data.Models;
 global using Avanpost.Interviews.Task.Integration.Data.Models.Models;
 global using Avanpost.Interviews.Task.Integration.Data.DbCommon.DbModels;
 global using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Data;
 
 namespace Avanpost.Interviews.Task.Integration.SandBox.Connector
 {
@@ -62,46 +65,161 @@ namespace Avanpost.Interviews.Task.Integration.SandBox.Connector
 
         public IEnumerable<Property> GetAllProperties()
         {
-            throw new NotImplementedException();
+            List<Property> s = new List<Property>();
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var a = dbcs.ITRoles.ToList();
+                foreach (var role in a)
+                {
+                    Property permission = new Property(role.Id.ToString(), role.Name);
+                    s.Add(permission);
+                }
+                return s;
+            }
         }
 
+        
         public IEnumerable<UserProperty> GetUserProperties(string userLogin)
         {
-            //Обработать в update
-            throw new NotImplementedException();
-        }
+            List<UserProperty> permissions = new List<UserProperty>();
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var ts = dbcs.Users.FirstOrDefault(u => u.Login == userLogin);
 
+                
+                if (ts != null)
+                {
+                    UserProperty permission = new UserProperty(ts.Login, ts.TelephoneNumber);
+
+                    permissions.Add(permission);
+                }
+            }
+
+            return permissions;
+
+
+        }
         public bool IsUserExists(string userLogin)
         {
-            throw new NotImplementedException();
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var user = dbcs.Users.FirstOrDefault(u => u.Login == userLogin);
+
+                return user != null;
+            }
+
         }
 
         public void UpdateUserProperties(IEnumerable<UserProperty> properties, string userLogin)
         {
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var user = dbcs.Users.FirstOrDefault(u => u.Login == userLogin);
+                if (user != null)
+                {
+                    foreach (var property in properties)
+                    {
 
-
+                        user.TelephoneNumber = property.Value;
+                    }
+                    dbcs.SaveChanges();
+                }
+            }
         }
 
         public IEnumerable<Permission> GetAllPermissions()
         {
-            throw new NotImplementedException();
-        }
+            using (var dbcs = new Dbcs(connectr))
+            {
+               var t = dbcs.RequestRights.ToList();
+               List< Permission> permissions = new List< Permission>();
+                foreach (var role in t)
+                {
+                    Permission permission = new Permission(role.Id.ToString(), role.Name, role.Name);
+                    permissions.Add(permission);
+                }
+                var ts = dbcs.ITRoles.ToList();
 
+                foreach (var role in ts)
+                {
+                    Permission permission = new Permission(role.Id.ToString(), role.Name, role.CorporatePhoneNumber);
+                    permissions.Add(permission);
+                }
+
+
+
+                return permissions;
+            }
+        }
+    
+        //"GlavnyyNN"  "Role 1"
         public void AddUserPermissions(string userLogin, IEnumerable<string> rightIds)
         {
+            string Id = "";
+            foreach (string id in rightIds)
+            {
+                Id = id;
+            }
 
+            string output1 = Id.Replace("Role", "");
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var userITRole = new UserITRole
+                {
+                    UserId = userLogin,
+                    RoleId =Convert.ToInt32( output1)
+                };
+
+                dbcs.UserITRoles.Add(userITRole);
+                dbcs.SaveChanges();
+            }
         }
 
         public void RemoveUserPermissions(string userLogin, IEnumerable<string> rightIds)
         {
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var user = dbcs.Users.FirstOrDefault(u => u.Login == userLogin);
+                if (user != null)
+                {
+                    foreach (var rightId in rightIds)
+                    {
+                        string output1 = rightId.Replace("Request", "");
+
+                        
+                        if (int.TryParse(output1, out int parsedRightId))
+                        {
+                            var userRequestRight = dbcs.UserRequestRights.FirstOrDefault(ur => ur.UserId == user.Login && ur.RightId == parsedRightId);
+                            if (userRequestRight != null)
+                            {
+                                dbcs.UserRequestRights.Remove(userRequestRight);
+                            }
+                        }
+                        else
+                        {
+                        }
+                    }
+                    dbcs.SaveChanges();
+                }
+            }
 
         }
-
         public IEnumerable<string> GetUserPermissions(string userLogin)
         {
-            throw new NotImplementedException();
-        }
 
+            List<string> permissions = new List<string>();
+
+            using (var dbcs = new Dbcs(connectr))
+            {
+                var userPermissions = dbcs.UserRequestRights.Where(up => up.UserId == userLogin).ToList();
+
+                foreach (var permission in userPermissions)
+                {
+                    permissions.Add(permission.UserId);
+                }
+                return permissions;
+            }
+        }
         public ILogger Logger { get; set; }
 
 
