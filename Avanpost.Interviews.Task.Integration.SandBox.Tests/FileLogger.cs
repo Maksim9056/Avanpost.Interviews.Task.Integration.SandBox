@@ -1,6 +1,4 @@
-﻿
-
-namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
+﻿namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
 {
     public class FileLogger : ILogger
     {

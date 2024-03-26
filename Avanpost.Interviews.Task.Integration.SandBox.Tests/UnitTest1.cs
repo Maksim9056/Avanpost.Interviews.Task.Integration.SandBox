@@ -1,7 +1,3 @@
-
-
-//using System.Diagnostics;
-
 namespace Avanpost.Interviews.Task.Integration.SandBox.Tests
 {
     public class UnitTest1
