@@ -1,13 +1,4 @@
-﻿
-//using Avanpost.Interviews.Task.Integration.Data.DbCommon;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Reflection.Emit;
-//using System.Text;
-//using System.Threading.Tasks;
-
-namespace Avanpost.Interviews.Task.Integration.SandBox.Connector
+﻿namespace Avanpost.Interviews.Task.Integration.SandBox.Connector
 {
     public class Dbcs : DbContext
     {
